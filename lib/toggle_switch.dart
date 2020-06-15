@@ -12,7 +12,7 @@ class ToggleSwitch extends StatefulWidget {
   final List<String> labels;
   final double cornerRadius;
   final OnToggle onToggle;
-  final int initialLabelIndex;
+  int initialLabelIndex;
   final double minWidth;
   final List<IconData> icons;
   final List<Color> activeColors;
@@ -38,11 +38,9 @@ class ToggleSwitch extends StatefulWidget {
 
 class _ToggleSwitchState extends State<ToggleSwitch>
     with AutomaticKeepAliveClientMixin<ToggleSwitch> {
-  int current;
 
   @override
   void initState() {
-    current = widget.initialLabelIndex;
     super.initState();
   }
 
@@ -60,7 +58,7 @@ class _ToggleSwitchState extends State<ToggleSwitch>
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: List.generate(widget.labels.length * 2 - 1, (index) {
-            final active = index ~/ 2 == current;
+            final active = index ~/ 2 == widget.initialLabelIndex;
             final textColor =
                 active ? widget.activeTextColor : widget.inactiveTextColor;
             var bgColor = Colors.transparent;
@@ -70,7 +68,7 @@ class _ToggleSwitchState extends State<ToggleSwitch>
                   : widget.activeColors[index ~/ 2];
             }
             if (index % 2 == 1) {
-              final activeDivider = active || index ~/ 2 == current - 1;
+              final activeDivider = active || index ~/ 2 == widget.initialLabelIndex - 1;
               return Container(
                 width: 1,
                 color: activeDivider ? widget.activeBgColor : Colors.white30,
@@ -106,7 +104,7 @@ class _ToggleSwitchState extends State<ToggleSwitch>
   }
 
   void _handleOnTap(int index) async {
-    setState(() => current = index);
+    setState(() => widget.initialLabelIndex = index);
     if (widget.onToggle != null) {
       widget.onToggle(index);
     }
